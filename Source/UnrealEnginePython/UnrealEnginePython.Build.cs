@@ -1,6 +1,7 @@
 // Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
+using System;
 using System.IO;
 using System.Collections.Generic;
 
@@ -9,6 +10,8 @@ public class UnrealEnginePython : ModuleRules
 
     // leave this string as empty for triggering auto-discovery of python installations...
     private string pythonHome = "";
+    
+    
     // otherwise specify the path of your python installation
     //private string pythonHome = "C:/Program Files/Python36";
     // this is an example for Homebrew on Mac
@@ -19,6 +22,7 @@ public class UnrealEnginePython : ModuleRules
     private string[] windowsKnownPaths =
     {
        // "C:/Program Files/Python37",
+        Environment.GetEnvironmentVariable("PYTHON_PATH", EnvironmentVariableTarget.Machine),
         "C:/Program Files/Python36",
         "C:/Program Files/Python35",
         "C:/Python27",
@@ -39,6 +43,8 @@ public class UnrealEnginePython : ModuleRules
 
     private string[] linuxKnownIncludesPaths =
     {
+	    Environment.GetEnvironmentVariable("LINUX_PYTHON_PATH") + "/include/python3.8",
+	    //"C:/UnrealToolchains/v16_clang-9.0.1-centos7/x86_64-unknown-linux-gnu/usr/include/python3.8",
         "/usr/local/include/python3.8",
         "/usr/local/include/python3.8m",
         "/usr/local/include/python3.7",
@@ -61,7 +67,9 @@ public class UnrealEnginePython : ModuleRules
 
     private string[] linuxKnownLibsPaths =
     {
-        "/usr/local/lib/libpython3.8.so",
+	    Environment.GetEnvironmentVariable("LINUX_PYTHON_PATH") + "/lib/libpython3.8.so",
+	    //"C:/UnrealToolchains/v16_clang-9.0.1-centos7/x86_64-unknown-linux-gnu/usr/lib/x86_64-linux-gnu/libpython3.8.so",
+	    "/usr/local/lib/libpython3.8.so",
         "/usr/local/lib/libpython3.8m.so",
         "/usr/local/lib/x86_64-linux-gnu/libpython3.8.so",
         "/usr/local/lib/x86_64-linux-gnu/libpython3.8m.so",

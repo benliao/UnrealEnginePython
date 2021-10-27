@@ -495,6 +495,34 @@ void FUnrealEnginePythonModule::StartupModule()
 
 	Py_Initialize();
 
+	UE_LOG(LogPython, Log, TEXT("Using Python %d.%d.%d"), PY_MAJOR_VERSION, PY_MINOR_VERSION, PY_MICRO_VERSION);
+
+	// Python 3 changes the console mode from O_TEXT to O_BINARY which affects other UE4 uses of the console
+	// So change the console mode back to its current setting after Py_Initialize has been called
+
+	#if PLATFORM_WINDOWS && PY_MAJOR_VERSION >= 3
+	// We call _setmode here to cache the current state
+	CA_SUPPRESS(6031)
+	fflush(stdin);
+	const int StdInMode  = _setmode(_fileno(stdin), _O_TEXT);
+	CA_SUPPRESS(6031)
+	fflush(stdout);
+	const int StdOutMode = _setmode(_fileno(stdout), _O_TEXT);
+	CA_SUPPRESS(6031)
+	fflush(stderr);
+	const int StdErrMode = _setmode(_fileno(stderr), _O_TEXT);
+	#endif	// PLATFORM_WINDOWS && PY_MAJOR_VERSION >= 3
+
+#if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION >= 8
+	// Python 3.8+ changes the C locale which affects UE4 functions using C string APIs
+	// So change the C locale back to its current setting after Py_Initialize has been called
+	FString CurrentLocale;
+	if (const char* CurrentLocalePtr = setlocale(LC_ALL, "C"))
+	{
+		CurrentLocale = ANSI_TO_TCHAR(CurrentLocalePtr);
+	}
+#endif	// PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION >= 8
+
 #if PLATFORM_WINDOWS
 	// Restore stdio state after Py_Initialize set it to O_BINARY, otherwise
 	// everything that the engine will output is going to be encoded in UTF-16.
@@ -564,6 +592,8 @@ void FUnrealEnginePythonModule::StartupModule()
 			unreal_engine_py_log_error();
 		}
 	}
+
+
 
 	// release the GIL
 	PyThreadState *UEPyGlobalState = PyEval_SaveThread();
