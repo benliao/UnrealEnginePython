@@ -2,6 +2,20 @@
 # UnrealEnginePython
 Embed Python in Unreal Engine 4
 
+## 重要说明
+  这个版本支持UE4.25, 支持交叉编译Linux服务器。
+
+## 步骤
+* 把本工程克隆到ue4源代码的Plugin目录下
+* 设置系统环境变量 （一定要是系统环境变量）
+    * PYTHON_PATH 指向Windows的python 安装地址
+    * LINUX_PYTHON_PATH 指向本仓库的linux_py38的目录
+* 重新编译项目
+
+------------------------------------------------------------------------------------------------------
+
+
+
 Teaser (by Kite & Lightning): https://twitter.com/KNLstudio/status/932657812466843648
 
 Fixing Mixamo RootMotion tuturial: https://github.com/20tab/UnrealEnginePython/blob/master/tutorials/FixingMixamoRootMotionWithPython.md
